@@ -7,7 +7,9 @@ async function listJobs({ page = 1, limit = 10, q, location, employmentType }) {
   const skip = (Number(page) - 1) * take;
 
   const where = {
-    status: 'ACTIVE',
+    jobStatus: {
+      code: 'ACTIVE',
+    },
   };
 
   if (q) {
@@ -35,6 +37,7 @@ async function listJobs({ page = 1, limit = 10, q, location, employmentType }) {
       },
       include: {
         business: true,
+        jobStatus: true,
       },
     }),
     prisma.jobPost.count({ where }),
@@ -53,7 +56,6 @@ async function listJobs({ page = 1, limit = 10, q, location, employmentType }) {
   };
 }
 
-// list jobs milik business yang dimiliki user login
 async function listMyJobs(userId, { page = 1, limit = 10 }) {
   const take = Number(limit) || 10;
   const skip = (Number(page) - 1) * take;
@@ -74,6 +76,7 @@ async function listMyJobs(userId, { page = 1, limit = 10 }) {
       },
       include: {
         business: true,
+        jobStatus: true,
       },
     }),
     prisma.jobPost.count({ where }),
@@ -114,6 +117,17 @@ async function createJob({ userId, businessId, payload }) {
     throw error;
   }
 
+  const activeStatus = await prisma.jobStatus.findUnique({
+    where: { code: 'ACTIVE' },
+  });
+
+  if (!activeStatus) {
+    const error = new Error('ACTIVE JobStatus not configured');
+    error.code = 500;
+    error.errorCode = 'INTERNAL_SERVER_ERROR';
+    throw error;
+  }
+
   const { title } = payload;
   const slugBase = title
     .toLowerCase()
@@ -125,6 +139,7 @@ async function createJob({ userId, businessId, payload }) {
   const job = await prisma.jobPost.create({
     data: {
       businessId: business.id,
+      jobStatusId: activeStatus.id,
       title,
       slug,
       locationType: payload.locationType,
@@ -139,7 +154,6 @@ async function createJob({ userId, businessId, payload }) {
       applicationOptionExternal: payload.applicationOptionExternal,
       externalApplyUrl: payload.externalApplyUrl,
       externalApplyEmail: payload.externalApplyEmail,
-      status: 'ACTIVE',
       publishedAt: new Date(),
       expiresAt: payload.expiresAt ? new Date(payload.expiresAt) : null,
     },
@@ -153,6 +167,7 @@ async function getJobById(id) {
     where: { id },
     include: {
       business: true,
+      jobStatus: true,
     },
   });
 
@@ -171,6 +186,7 @@ async function getJobBySlug(slug) {
     where: { slug },
     include: {
       business: true,
+      jobStatus: true,
     },
   });
 
@@ -184,7 +200,6 @@ async function getJobBySlug(slug) {
   return job;
 }
 
-// update job milik business owner (simple update)
 async function updateJob({ userId, jobId, payload }) {
   const existing = await prisma.jobPost.findFirst({
     where: {
@@ -232,11 +247,10 @@ async function updateJob({ userId, jobId, payload }) {
   return job;
 }
 
-// ubah status job: ACTIVE / SUSPENDED / ARCHIVED
-async function changeJobStatus({ userId, jobId, status }) {
+async function changeJobStatus({ userId, jobId, statusCode }) {
   const allowedStatuses = ['ACTIVE', 'SUSPENDED', 'ARCHIVED'];
 
-  if (!allowedStatuses.includes(status)) {
+  if (!allowedStatuses.includes(statusCode)) {
     const error = new Error('Invalid status value');
     error.code = 422;
     error.errorCode = 'VALIDATION_ERROR';
@@ -265,10 +279,21 @@ async function changeJobStatus({ userId, jobId, status }) {
     throw error;
   }
 
+  const statusRecord = await prisma.jobStatus.findUnique({
+    where: { code: statusCode },
+  });
+
+  if (!statusRecord) {
+    const error = new Error('JobStatus not configured');
+    error.code = 500;
+    error.errorCode = 'INTERNAL_SERVER_ERROR';
+    throw error;
+  }
+
   const updated = await prisma.jobPost.update({
     where: { id: jobId },
     data: {
-      status,
+      jobStatusId: statusRecord.id,
     },
   });
 

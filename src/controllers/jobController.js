@@ -97,7 +97,6 @@ async function getJobDetail(req, res, next) {
   try {
     const { idOrSlug } = req.params;
 
-    // kalau bentuknya UUID, pakai findById, kalau bukan, try slug
     let job;
     if (idOrSlug.includes('-') && idOrSlug.length > 20) {
       job = await getJobById(idOrSlug);
@@ -170,7 +169,7 @@ async function changeJobStatusHandler(req, res, next) {
     const job = await changeJobStatus({
       userId: req.user.id,
       jobId: id,
-      status,
+      statusCode: status,
     });
 
     return successResponse(res, {

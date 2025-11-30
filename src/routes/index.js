@@ -1,3 +1,5 @@
+// src/routes/index.js
+
 const express = require('express');
 const authRoutes = require('./authRoutes');
 const businessRoutes = require('./businessRoutes');
@@ -9,6 +11,6 @@ const router = express.Router();
 router.use('/auth', authRoutes);
 router.use('/businesses', businessRoutes);
 router.use('/jobs', jobRoutes);
-router.use('/', jobApplicationRoutes); // /jobs/:jobId/applications, /job-applications/:id
+router.use('/', jobApplicationRoutes); // jobs/:jobId/applications, me/job-applications, job-applications/:id
 
 module.exports = router;

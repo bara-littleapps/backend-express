@@ -4,19 +4,27 @@ const express = require('express');
 const {
   createJobApplicationHandler,
   getJobApplicationsForJob,
+  getJobApplicationsStats,
+  getMyJobApplications,
   getJobApplicationDetail,
 } = require('../controllers/jobApplicationController');
-const { authRequired } = require('../middlewares/authMiddleware');
+const { authRequired, authOptional } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-// apply job (platform / external)
-router.post('/jobs/:jobId/applications', authRequired, createJobApplicationHandler);
+// Guest / login: apply job (PLATFORM / EXTERNAL)
+router.post('/jobs/:jobId/applications', authOptional, createJobApplicationHandler);
 
-// list applications for a job (business owner only)
+// Owner: list semua aplikasi untuk satu job
 router.get('/jobs/:jobId/applications', authRequired, getJobApplicationsForJob);
 
-// detail satu job application
+// Owner: statistik lamaran job
+router.get('/jobs/:jobId/applications/stats', authRequired, getJobApplicationsStats);
+
+// Login user: list semua lamarannya sendiri
+router.get('/me/job-applications', authRequired, getMyJobApplications);
+
+// Detail lamaran (pelamar / owner)
 router.get('/job-applications/:id', authRequired, getJobApplicationDetail);
 
 module.exports = router;

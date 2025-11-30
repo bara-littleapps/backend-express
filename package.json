@@ -9,7 +9,8 @@
   "scripts": {
       "dev": "node src/server.js",
       "prisma:migrate": "npx prisma migrate dev",
-      "prisma:generate": "npx prisma generate"
+      "prisma:generate": "npx prisma generate",
+      "prisma:seed": "npx prisma db seed"
   },
   "keywords": [],
   "author": "",
@@ -26,5 +27,8 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.1",
     "pg": "^8.16.3"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   }
 }

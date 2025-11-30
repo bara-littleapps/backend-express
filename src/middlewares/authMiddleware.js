@@ -52,7 +52,33 @@ function requireRole(roleName) {
   };
 }
 
+// ⬇️ baru: optional auth (boleh guest)
+function authOptional(req, res, next) {
+  const authHeader = req.headers.authorization || '';
+
+  if (!authHeader.startsWith('Bearer ')) {
+    req.user = null;
+    return next();
+  }
+
+  const token = authHeader.split(' ')[1];
+
+  try {
+    const decoded = verifyAccessToken(token);
+    req.user = {
+      id: decoded.id,
+      email: decoded.email,
+      roles: decoded.roles || [],
+    };
+  } catch (err) {
+    req.user = null;
+  }
+
+  return next();
+}
+
 module.exports = {
   authRequired,
   requireRole,
+  authOptional,
 };

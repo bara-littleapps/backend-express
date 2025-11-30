@@ -1,5 +1,3 @@
-// prisma/schema.prisma
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -10,51 +8,48 @@ generator client {
 }
 
 model User {
-  id           String @id @default(uuid())
-  name         String
-  username     String @unique
-  email        String @unique
-  passwordHash String
+  id               String              @id @default(uuid())
+  name             String
+  username         String              @unique
+  email            String              @unique
+  passwordHash     String
 
-  phone       String?
-  avatarUrl   String?
-  bio         String?
-  location    String?
-  websiteUrl  String?
-  socialLinks Json? // { linkedin, twitter, etc }
+  phone            String?
+  avatarUrl        String?
+  bio              String?
+  location         String?
+  websiteUrl       String?
+  socialLinks      Json?
 
-  isActive        Boolean   @default(true)
-  emailVerifiedAt DateTime?
-  lastLoginAt     DateTime?
+  isActive         Boolean             @default(true)
+  emailVerifiedAt  DateTime?
+  lastLoginAt      DateTime?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
 
-  // Relations
-  roles      UserRole[]
-  authTokens AuthToken[]
+  roles            UserRole[]
+  authTokens       AuthToken[]
 
-  businesses         Business[]
+  businesses       Business[]
   contributorProfile ContributorProfile?
 
-  articles           Article[]
-  events             Event[]             @relation("UserEvents")
+  articles         Article[]
+  events           Event[]             @relation("UserEvents")
   eventRegistrations EventRegistration[]
-  jobApplications    JobApplication[]
+  jobApplications  JobApplication[]
 
-  payments         Payment[] @relation("UserPayments")
-  verifiedPayments Payment[] @relation("UserVerifiedPayments")
+  payments         Payment[]           @relation("UserPayments")
+  verifiedPayments Payment[]           @relation("UserVerifiedPayments")
 }
 
 model Role {
-  id          String  @id @default(uuid())
-  name        String  @unique // e.g. ADMIN, BUSINESS_OWNER, CONTRIBUTOR
+  id          String    @id @default(uuid())
+  name        String    @unique
   description String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  users UserRole[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  users       UserRole[]
 }
 
 model UserRole {
@@ -67,208 +62,199 @@ model UserRole {
 }
 
 model AuthToken {
-  id     String @id @default(uuid())
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-
-  token     String    @unique
-  tokenType String // REFRESH, EMAIL_VERIFY, PASSWORD_RESET, etc
-  isRevoked Boolean   @default(false)
-  expiresAt DateTime
-  createdAt DateTime  @default(now())
-  revokedAt DateTime?
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  token      String   @unique
+  tokenType  String
+  isRevoked  Boolean  @default(false)
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  revokedAt  DateTime?
 }
 
 model Business {
-  id      String @id @default(uuid())
-  owner   User   @relation(fields: [ownerId], references: [id])
-  ownerId String
-
+  id          String    @id @default(uuid())
+  owner       User      @relation(fields: [ownerId], references: [id])
+  ownerId     String
   name        String
   logoUrl     String?
   websiteUrl  String?
   description String?
+  status      String    // PENDING, APPROVED, REJECTED
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  status String // PENDING, APPROVED, REJECTED
+  jobPosts    JobPost[]
+  payments    Payment[]
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model JobStatus {
+  id          String    @id @default(uuid())
+  code        String    @unique   // ACTIVE, SUSPENDED, ARCHIVED, dll
+  label       String
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  jobPosts JobPost[]
-  payments Payment[]
+  jobPosts    JobPost[]
 }
 
 model JobPost {
-  id         String   @id @default(uuid())
-  business   Business @relation(fields: [businessId], references: [id])
-  businessId String
+  id                         String     @id @default(uuid())
+  business                   Business   @relation(fields: [businessId], references: [id])
+  businessId                 String
 
-  title String
-  slug  String
+  jobStatus                  JobStatus  @relation(fields: [jobStatusId], references: [id])
+  jobStatusId                String
 
-  locationType   String // REMOTE, ONSITE, HYBRID (string)
-  locationText   String?
-  employmentType String // FULLTIME, PARTTIME, CONTRACT, etc
+  title                      String
+  slug                       String
 
-  salaryMin Decimal? @db.Decimal(18, 2)
-  salaryMax Decimal? @db.Decimal(18, 2)
-  currency  String? // IDR, USD, etc
+  locationType               String
+  locationText               String?
+  employmentType             String
 
-  description  String
-  requirements String?
+  salaryMin                  Decimal?   @db.Decimal(18, 2)
+  salaryMax                  Decimal?   @db.Decimal(18, 2)
+  currency                   String?
 
-  applicationOptionPlatform Boolean @default(true)
-  applicationOptionExternal Boolean @default(false)
-  externalApplyUrl          String?
-  externalApplyEmail        String?
+  description                String
+  requirements               String?
 
-  status      String // ACTIVE, SUSPENDED, ARCHIVED
-  publishedAt DateTime?
-  expiresAt   DateTime?
+  applicationOptionPlatform  Boolean    @default(true)
+  applicationOptionExternal  Boolean    @default(false)
+  externalApplyUrl           String?
+  externalApplyEmail         String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  publishedAt                DateTime?
+  expiresAt                  DateTime?
 
-  applications JobApplication[]
-  payments     Payment[]
+  createdAt                  DateTime   @default(now())
+  updatedAt                  DateTime   @updatedAt
+
+  applications               JobApplication[]
+  payments                   Payment[]
 }
 
 model JobApplication {
-  id        String  @id @default(uuid())
-  jobPost   JobPost @relation(fields: [jobPostId], references: [id])
-  jobPostId String
+  id                    String    @id @default(uuid())
+  jobPost               JobPost   @relation(fields: [jobPostId], references: [id])
+  jobPostId             String
 
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
+  user                  User?     @relation(fields: [userId], references: [id])
+  userId                String?
 
-  applicationMethod String // PLATFORM, EXTERNAL
+  applicationMethod     String    // PLATFORM, EXTERNAL
+
+  // data pelamar (guest / login)
+  applicantName         String?
+  applicantEmail        String?
+  applicantPhone        String?
 
   // PLATFORM fields
-  cvUrl        String?
-  resumeUrl    String?
-  portfolioUrl String?
-  coverLetter  String?
+  cvUrl                 String?
+  resumeUrl             String?
+  portfolioUrl          String?
+  coverLetter           String?
 
   // EXTERNAL tracking
-  externalTarget      String? // EMAIL, WEBSITE
-  externalDestination String?
-  externalClickedAt   DateTime?
+  externalTarget        String?   // WEBSITE, EMAIL
+  externalDestination   String?
+  externalClickedAt     DateTime?
 
-  status String // SUBMITTED, REVIEWED, REJECTED, ACCEPTED, CLICKED
+  status                String    // SUBMITTED, REVIEWED, REJECTED, ACCEPTED, CLICKED
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 }
 
 model ContributorProfile {
-  id     String @id @default(uuid())
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @unique
-
-  bio         String?
-  socialLinks Json?
-
-  status String // PENDING, APPROVED, REJECTED
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(uuid())
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String   @unique
+  bio          String?
+  socialLinks  Json?
+  status       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Article {
-  id       String @id @default(uuid())
-  author   User   @relation(fields: [authorId], references: [id])
-  authorId String
-
+  id            String   @id @default(uuid())
+  author        User     @relation(fields: [authorId], references: [id])
+  authorId      String
   title         String
   slug          String
   excerpt       String?
   content       String
   coverImageUrl String?
-
-  status      String // ACTIVE, SUSPENDED, ARCHIVED
-  publishedAt DateTime?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  status        String
+  publishedAt   DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Event {
-  id        String @id @default(uuid())
-  creator   User   @relation("UserEvents", fields: [creatorId], references: [id])
-  creatorId String
-
-  title       String
-  slug        String
-  type        String // MAIN_BARENG, GENERIC, etc
-  description String
-
-  location      String
-  startDatetime DateTime
-  endDatetime   DateTime
-
-  isPaid         Boolean  @default(false)
-  pricePerPerson Decimal? @db.Decimal(18, 2)
-  adminFee       Decimal? @db.Decimal(18, 2)
+  id             String               @id @default(uuid())
+  creator        User                 @relation("UserEvents", fields: [creatorId], references: [id])
+  creatorId      String
+  title          String
+  slug           String
+  type           String
+  description    String
+  location       String
+  startDatetime  DateTime
+  endDatetime    DateTime
+  isPaid         Boolean              @default(false)
+  pricePerPerson Decimal?             @db.Decimal(18, 2)
+  adminFee       Decimal?             @db.Decimal(18, 2)
   quota          Int?
+  status         String
+  publishedAt    DateTime?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
 
-  status      String // ACTIVE, SUSPENDED, CANCELLED, ARCHIVED
-  publishedAt DateTime?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  registrations EventRegistration[]
-  payments      Payment[]
+  registrations  EventRegistration[]
+  payments       Payment[]
 }
 
 model EventRegistration {
-  id      String @id @default(uuid())
-  event   Event  @relation(fields: [eventId], references: [id])
-  eventId String
+  id           String     @id @default(uuid())
+  event        Event      @relation(fields: [eventId], references: [id])
+  eventId      String
+  user         User       @relation(fields: [userId], references: [id])
+  userId       String
+  status       String
+  totalAmount  Decimal    @db.Decimal(18, 2)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-
-  status      String // PENDING_PAYMENT, AWAITING_VERIFICATION, CONFIRMED, REJECTED, CANCELLED
-  totalAmount Decimal @db.Decimal(18, 2)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  payments Payment[]
+  payments     Payment[]
 }
 
 model Payment {
-  id String @id @default(uuid())
+  id                   String             @id @default(uuid())
+  user                 User               @relation("UserPayments", fields: [userId], references: [id])
+  userId               String
+  verifiedBy           User?              @relation("UserVerifiedPayments", fields: [verifiedById], references: [id])
+  verifiedById         String?
+  paymentType          String
+  amount               Decimal            @db.Decimal(18, 2)
+  referenceCode        String?
+  screenshotUrl        String?
+  status               String
 
-  // user who made the payment
-  user   User   @relation("UserPayments", fields: [userId], references: [id])
-  userId String
+  business             Business?          @relation(fields: [businessId], references: [id])
+  businessId           String?
+  eventRegistration    EventRegistration? @relation(fields: [eventRegistrationId], references: [id])
+  eventRegistrationId  String?
+  jobPost              JobPost?           @relation(fields: [jobPostId], references: [id])
+  jobPostId            String?
+  event                Event?             @relation(fields: [eventId], references: [id])
+  eventId              String?
 
-  // admin who verified the payment (optional)
-  verifiedBy   User?   @relation("UserVerifiedPayments", fields: [verifiedById], references: [id])
-  verifiedById String?
-
-  paymentType   String // EVENT_REGISTRATION, DONATION
-  amount        Decimal @db.Decimal(18, 2)
-  referenceCode String?
-  screenshotUrl String?
-  status        String // AWAITING_VERIFICATION, CONFIRMED, REJECTED
-
-  // Relations to domain objects (optional, tergantung konteks pembayaran)
-  business   Business? @relation(fields: [businessId], references: [id])
-  businessId String?
-
-  eventRegistration   EventRegistration? @relation(fields: [eventRegistrationId], references: [id])
-  eventRegistrationId String?
-
-  jobPost   JobPost? @relation(fields: [jobPostId], references: [id])
-  jobPostId String?
-
-  event   Event?  @relation(fields: [eventId], references: [id])
-  eventId String?
-
-  createdAt  DateTime  @default(now())
-  verifiedAt DateTime?
-  updatedAt  DateTime  @updatedAt
+  createdAt            DateTime           @default(now())
+  verifiedAt           DateTime?
+  updatedAt            DateTime           @updatedAt
 }
