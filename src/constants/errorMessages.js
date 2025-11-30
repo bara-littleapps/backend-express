@@ -1,5 +1,3 @@
-// src/constants/errorMessages.js
-
 const errorMessages = {
   VALIDATION_ERROR: 'Validation error',
   UNAUTHORIZED: 'Unauthorized',
