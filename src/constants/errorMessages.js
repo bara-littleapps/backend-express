@@ -26,6 +26,11 @@ const errorMessages = {
 
   // Payment
   PAYMENT_NOT_FOUND: 'Payment not found',
+
+  // Contributor / Article
+  CONTRIBUTOR_PROFILE_NOT_FOUND: 'Contributor profile not found',
+  CONTRIBUTOR_NOT_ACTIVE: 'Contributor is not active',
+  ARTICLE_NOT_FOUND: 'Article not found',
 };
 
 module.exports = errorMessages;
