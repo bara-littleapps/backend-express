@@ -9,6 +9,7 @@ const contributorRoutes = require('./contributorRoutes');
 const articleRoutes = require('./articleRoutes');
 const eventRoutes = require('./eventRoutes');
 const paymentRoutes = require('./paymentRoutes');
+const adminRoutes = require('./adminRoutes');
 
 const router = express.Router();
 
@@ -20,6 +21,10 @@ router.use('/articles', articleRoutes);
 router.use('/events', eventRoutes);
 router.use('/payments', paymentRoutes);
 
+// Admin dashboard
+router.use('/admin', adminRoutes);
+
+// Job application routes (apply / my applications / detail)
 router.use('/', jobApplicationRoutes);
 
 module.exports = router;
