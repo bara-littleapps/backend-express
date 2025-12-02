@@ -1,5 +1,3 @@
-// src/routes/jobApplicationRoutes.js
-
 const express = require('express');
 const {
   createJobApplicationHandler,
@@ -15,16 +13,16 @@ const router = express.Router();
 // Guest / login: apply job (PLATFORM / EXTERNAL)
 router.post('/jobs/:jobId/applications', authOptional, createJobApplicationHandler);
 
-// Owner: list semua aplikasi untuk satu job
+// Owner: list all applications for a job
 router.get('/jobs/:jobId/applications', authRequired, getJobApplicationsForJob);
 
-// Owner: statistik lamaran job
+// Owner: stats applications for a job
 router.get('/jobs/:jobId/applications/stats', authRequired, getJobApplicationsStats);
 
-// Login user: list semua lamarannya sendiri
+// Login user: list my job applications
 router.get('/me/job-applications', authRequired, getMyJobApplications);
 
-// Detail lamaran (pelamar / owner)
+// Detail job application
 router.get('/job-applications/:id', authRequired, getJobApplicationDetail);
 
 module.exports = router;

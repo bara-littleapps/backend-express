@@ -1,5 +1,3 @@
-// src/utils/response.js
-
 const errorMessages = require('../constants/errorMessages');
 
 function successResponse(res, { code = 200, message = 'Success', data = null, meta = null }) {

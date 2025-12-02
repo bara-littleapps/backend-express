@@ -1,5 +1,3 @@
-// src/controllers/contributorController.js
-
 const { successResponse, errorResponse } = require('../utils/response');
 const {
   applyContributor,

@@ -1,5 +1,3 @@
-// src/services/jobService.js
-
 const prisma = require('../prisma/client');
 
 async function listJobs({ page = 1, limit = 10, q, location, employmentType }) {

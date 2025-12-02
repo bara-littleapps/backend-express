@@ -1,5 +1,3 @@
-// src/middlewares/errorHandler.js
-
 const { errorResponse } = require('../utils/response');
 
 function errorHandler(err, req, res, next) {

@@ -1,5 +1,3 @@
-// src/middlewares/authMiddleware.js
-
 const { verifyAccessToken } = require('../config/jwtConfig');
 const { errorResponse } = require('../utils/response');
 
@@ -52,7 +50,7 @@ function requireRole(roleName) {
   };
 }
 
-// ⬇️ baru: optional auth (boleh guest)
+//Auth optional middleware
 function authOptional(req, res, next) {
   const authHeader = req.headers.authorization || '';
 

@@ -1,5 +1,3 @@
-// src/utils/password.js
-
 const bcrypt = require('bcryptjs');
 
 async function hashPassword(plain) {

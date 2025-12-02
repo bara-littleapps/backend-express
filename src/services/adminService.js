@@ -1,5 +1,3 @@
-// src/services/adminService.js
-
 const prisma = require('../prisma/client');
 
 // ---------- USERS ----------

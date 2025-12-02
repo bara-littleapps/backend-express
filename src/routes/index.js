@@ -1,5 +1,3 @@
-// src/routes/index.js
-
 const express = require('express');
 const authRoutes = require('./authRoutes');
 const businessRoutes = require('./businessRoutes');

@@ -1,5 +1,3 @@
-// src/controllers/eventController.js
-
 const { successResponse, errorResponse } = require('../utils/response');
 const {
   listEvents,
@@ -184,7 +182,7 @@ async function changeEventStatusHandler(req, res, next) {
   }
 }
 
-// User login: register event (create registration + payment bila berbayar)
+// User login: register event (create registration + payment if paid)
 async function createEventRegistrationHandler(req, res, next) {
   try {
     const { eventId } = req.params;
@@ -224,7 +222,7 @@ async function createEventRegistrationHandler(req, res, next) {
   }
 }
 
-// Creator: list registrations untuk event
+// Creator: list registrations for event
 async function getEventRegistrationsHandler(req, res, next) {
   try {
     const { eventId } = req.params;
@@ -250,7 +248,7 @@ async function getEventRegistrationsHandler(req, res, next) {
   }
 }
 
-// Creator: stats registrasi
+// Creator: stats registrations for event
 async function getEventRegistrationStatsHandler(req, res, next) {
   try {
     const { eventId } = req.params;
@@ -276,7 +274,7 @@ async function getEventRegistrationStatsHandler(req, res, next) {
   }
 }
 
-// User: list event registrations miliknya
+// User: list event registrations for self
 async function getMyEventRegistrationsHandler(req, res, next) {
   try {
     const { page, limit } = req.query;

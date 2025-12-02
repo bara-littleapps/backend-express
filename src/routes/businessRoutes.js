@@ -1,5 +1,3 @@
-// src/routes/businessRoutes.js
-
 const express = require('express');
 const {
   getMyBusinesses,
@@ -10,13 +8,13 @@ const { authRequired } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-// GET /api/businesses/me  → list bisnis milik user login
+//List business for owner
 router.get('/me', authRequired, getMyBusinesses);
 
-// POST /api/businesses    → create business baru
+//Create business
 router.post('/', authRequired, createBusinessHandler);
 
-// GET /api/businesses/:id → detail business milik user
+//Detail business
 router.get('/:id', authRequired, getBusinessDetail);
 
 module.exports = router;

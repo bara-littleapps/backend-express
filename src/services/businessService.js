@@ -1,5 +1,3 @@
-// src/services/businessService.js
-
 const prisma = require('../prisma/client');
 
 async function listMyBusinesses(userId) {
@@ -31,7 +29,7 @@ async function createBusiness({ ownerId, name, logoUrl, websiteUrl, description 
 }
 
 async function getBusinessById(id, userId) {
-  // hanya owner yang bisa lihat detail (untuk sekarang)
+  // Only owner can access
   const business = await prisma.business.findFirst({
     where: {
       id,

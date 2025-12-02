@@ -1,5 +1,3 @@
-// src/routes/jobRoutes.js
-
 const express = require('express');
 const {
   getJobs,
@@ -16,7 +14,7 @@ const router = express.Router();
 // Public: list jobs
 router.get('/', getJobs);
 
-// Owner: list jobs milik user login
+// Owner: list jobs for self
 router.get('/me/list', authRequired, getMyJobsHandler);
 
 // Public: job detail

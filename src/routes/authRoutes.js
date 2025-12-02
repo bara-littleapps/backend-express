@@ -1,5 +1,3 @@
-// src/routes/authRoutes.js
-
 const express = require('express');
 const { register, login, refresh } = require('../controllers/authController');
 

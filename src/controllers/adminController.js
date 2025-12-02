@@ -1,5 +1,3 @@
-// src/controllers/adminController.js
-
 const { successResponse, errorResponse } = require('../utils/response');
 const {
   listUsers,

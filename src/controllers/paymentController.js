@@ -1,5 +1,3 @@
-// src/controllers/paymentController.js
-
 const { successResponse, errorResponse } = require('../utils/response');
 const {
   attachPaymentProof,

@@ -1,5 +1,3 @@
-// src/services/articleService.js
-
 const prisma = require('../prisma/client');
 const { ensureActiveContributor } = require('./contributorService');
 
@@ -57,7 +55,7 @@ async function listArticles({ page = 1, limit = 10, q }) {
   };
 }
 
-// Contributor: list article milik sendiri
+// Contributor: list their articles
 async function listMyArticles(userId, { page = 1, limit = 10 }) {
   const take = Number(limit) || 10;
   const skip = (Number(page) - 1) * take;
@@ -120,20 +118,17 @@ async function getArticlePublic(idOrSlug) {
   let article = null;
 
   if (idOrSlug.includes('-') && idOrSlug.length > 20) {
-    // kemungkinan besar UUID → coba by id
     article = await prisma.article.findUnique({
       where: { id: idOrSlug },
       include: { author: true },
     });
   } else {
-    // coba slug dulu
     article = await prisma.article.findFirst({
       where: { slug: idOrSlug },
       include: { author: true },
     });
 
     if (!article) {
-      // fallback id
       article = await prisma.article.findUnique({
         where: { id: idOrSlug },
         include: { author: true },
@@ -151,7 +146,7 @@ async function getArticlePublic(idOrSlug) {
   return article;
 }
 
-// Contributor: update article milik sendiri
+// Contributor: Update their article
 async function updateArticle({ authorId, articleId, payload }) {
   const existing = await prisma.article.findFirst({
     where: {
@@ -180,7 +175,7 @@ async function updateArticle({ authorId, articleId, payload }) {
   return article;
 }
 
-// Admin: ubah status article (PUBLISHED / SUSPENDED / ARCHIVED)
+// Admin: Change status (PUBLISHED / SUSPENDED / ARCHIVED)
 async function changeArticleStatus({ articleId, status }) {
   const allowed = ['PUBLISHED', 'SUSPENDED', 'ARCHIVED'];
 

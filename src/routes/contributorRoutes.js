@@ -1,5 +1,3 @@
-// src/routes/contributorRoutes.js
-
 const express = require('express');
 const {
   applyContributorHandler,
@@ -9,12 +7,10 @@ const { authRequired } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-// User login apply jadi contributor
-// POST /api/contributors/apply
+//User register for contributor role
 router.post('/apply', authRequired, applyContributorHandler);
 
-// Lihat contributor profile milik sendiri
-// GET /api/contributors/me
+//View my contributor profile
 router.get('/me', authRequired, getMyContributorProfileHandler);
 
 module.exports = router;

@@ -1,5 +1,3 @@
-// src/services/authService.js
-
 const jwt = require('jsonwebtoken');
 const dayjs = require('dayjs');
 const prisma = require('../prisma/client');

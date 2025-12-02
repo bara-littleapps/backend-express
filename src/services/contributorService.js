@@ -1,5 +1,3 @@
-// src/services/contributorService.js
-
 const prisma = require('../prisma/client');
 
 async function applyContributor(userId, payload) {
@@ -19,7 +17,7 @@ async function applyContributor(userId, payload) {
       userId,
       bio: payload.bio || null,
       socialLinks: payload.socialLinks || null,
-      status: 'ACTIVE', // langsung aktif, artikel auto publish
+      status: 'ACTIVE', // article auto publish
     },
   });
 

@@ -1,5 +1,3 @@
-// src/services/jobApplicationService.js
-
 const prisma = require('../prisma/client');
 
 async function createJobApplication({ userId, jobPostId, payload }) {
@@ -29,8 +27,6 @@ async function createJobApplication({ userId, jobPostId, payload }) {
     ];
     throw error;
   }
-
-  // cek apakah method diizinkan untuk job ini
   if (applicationMethod === 'PLATFORM' && !job.applicationOptionPlatform) {
     const error = new Error('Platform applications are not allowed for this job');
     error.code = 400;
@@ -40,7 +36,6 @@ async function createJobApplication({ userId, jobPostId, payload }) {
     ];
     throw error;
   }
-
   if (applicationMethod === 'EXTERNAL' && !job.applicationOptionExternal) {
     const error = new Error('External applications are not allowed for this job');
     error.code = 400;
@@ -94,7 +89,6 @@ async function createJobApplication({ userId, jobPostId, payload }) {
     }
   }
 
-  // PLATFORM: pastikan minimal CV + portfolio
   if (applicationMethod === 'PLATFORM') {
     const details = [];
     if (!payload.cvUrl) {
@@ -116,7 +110,6 @@ async function createJobApplication({ userId, jobPostId, payload }) {
     }
   }
 
-  // EXTERNAL: kalau mau tracking sebagai application
   if (applicationMethod === 'EXTERNAL') {
     const details = [];
     if (!payload.externalTarget) {
@@ -192,7 +185,7 @@ async function listApplicationsForJob({ jobPostId, ownerId }) {
   return apps;
 }
 
-// statistik per job
+// Job stats
 async function getJobStatsForOwner({ jobPostId, ownerId }) {
   const job = await prisma.jobPost.findFirst({
     where: {
@@ -250,7 +243,6 @@ async function getJobStatsForOwner({ jobPostId, ownerId }) {
   };
 }
 
-// list semua lamaran milik user login
 async function listMyApplications(userId, { page = 1, limit = 10 }) {
   const take = Number(limit) || 10;
   const skip = (Number(page) - 1) * take;

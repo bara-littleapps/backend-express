@@ -1,5 +1,3 @@
-// src/services/paymentService.js
-
 const prisma = require('../prisma/client');
 
 async function createPaymentForEventRegistration({ userId, event, registration }) {
@@ -23,7 +21,7 @@ async function createPaymentForEventRegistration({ userId, event, registration }
   return payment;
 }
 
-// User: upload bukti pembayaran (screenshot + reference)
+// User: upload proof transaction (screenshot + reference)
 async function attachPaymentProof({ paymentId, userId, payload }) {
   const payment = await prisma.payment.findUnique({
     where: { id: paymentId },
@@ -64,7 +62,7 @@ async function attachPaymentProof({ paymentId, userId, payload }) {
   return updated;
 }
 
-// Admin: verify / reject payment untuk event registration
+// Admin: verify / reject payment for event registration
 async function verifyEventPayment({ paymentId, adminId, status }) {
   const allowed = ['VERIFIED', 'REJECTED'];
 
@@ -131,7 +129,7 @@ async function verifyEventPayment({ paymentId, adminId, status }) {
   return updatedPayment;
 }
 
-// User: lihat payments miliknya
+// User: view my payments (paginated)
 async function listMyPayments(userId, { page = 1, limit = 10 }) {
   const take = Number(limit) || 10;
   const skip = (Number(page) - 1) * take;
@@ -171,7 +169,7 @@ async function listMyPayments(userId, { page = 1, limit = 10 }) {
   };
 }
 
-// Creator: lihat payments untuk event tertentu
+// Creator: view payments for their event
 async function listEventPaymentsForCreator({ eventId, creatorId }) {
   const event = await prisma.event.findFirst({
     where: {

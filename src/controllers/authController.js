@@ -1,5 +1,3 @@
-// src/controllers/authController.js
-
 const { successResponse, errorResponse } = require('../utils/response');
 const { registerUser, loginUser, refreshToken } = require('../services/authService');
 

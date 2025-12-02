@@ -1,5 +1,3 @@
-// src/controllers/jobController.js
-
 const { successResponse, errorResponse } = require('../utils/response');
 const {
   listJobs,

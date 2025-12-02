@@ -1,5 +1,3 @@
-// src/services/eventService.js
-
 const prisma = require('../prisma/client');
 const { EVENT_ADMIN_FEE_IDR } = require('../constants/financeConstants');
 
@@ -66,7 +64,7 @@ async function listEvents({ page = 1, limit = 10, q, upcoming }) {
   };
 }
 
-// Creator: list events milik sendiri
+// Creator: list their events
 async function listMyEvents(creatorId, { page = 1, limit = 10 }) {
   const take = Number(limit) || 10;
   const skip = (Number(page) - 1) * take;
@@ -100,7 +98,7 @@ async function listMyEvents(creatorId, { page = 1, limit = 10 }) {
   };
 }
 
-// Creator: create event (main bareng)
+// Creator: create event
 async function createEvent({ creatorId, payload }) {
   const {
     title,
@@ -173,7 +171,7 @@ async function getEventPublic(idOrSlug) {
   return event;
 }
 
-// Creator: update event milik sendiri
+// Creator: update event
 async function updateEvent({ creatorId, eventId, payload }) {
   const existing = await prisma.event.findFirst({
     where: {
@@ -217,7 +215,7 @@ async function updateEvent({ creatorId, eventId, payload }) {
   return event;
 }
 
-// Creator: ubah status event (PUBLISHED, CANCELLED, ARCHIVED, DRAFT)
+// Creator: change status (PUBLISHED, CANCELLED, ARCHIVED, DRAFT)
 async function changeEventStatus({ creatorId, eventId, status }) {
   const allowed = ['PUBLISHED', 'CANCELLED', 'ARCHIVED', 'DRAFT'];
 
@@ -262,7 +260,7 @@ async function changeEventStatus({ creatorId, eventId, status }) {
   return updated;
 }
 
-// Helper: cek kuota sebelum registrasi
+// Helper: check quote
 async function ensureEventCapacity(eventId) {
   const event = await prisma.event.findUnique({
     where: { id: eventId },
@@ -304,7 +302,7 @@ async function ensureEventCapacity(eventId) {
   return event;
 }
 
-// Registrasi event + payment (dibantu Payment service)
+// Register event + payment (Payment service)
 async function createEventRegistration({ userId, eventId }) {
   const event = await ensureEventCapacity(eventId);
 
@@ -374,7 +372,7 @@ async function listEventRegistrations({ eventId, creatorId }) {
   return regs;
 }
 
-// Creator: statistik registrasi event
+// Creator: stats register event
 async function getEventRegistrationStats({ eventId, creatorId }) {
   const event = await prisma.event.findFirst({
     where: {
@@ -414,7 +412,7 @@ async function getEventRegistrationStats({ eventId, creatorId }) {
   };
 }
 
-// User: lihat registrasi miliknya sendiri
+// User: view their event registrations
 async function listMyEventRegistrations(userId, { page = 1, limit = 10 }) {
   const take = Number(limit) || 10;
   const skip = (Number(page) - 1) * take;

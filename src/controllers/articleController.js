@@ -1,5 +1,3 @@
-// src/controllers/articleController.js
-
 const { successResponse, errorResponse } = require('../utils/response');
 const {
   listArticles,

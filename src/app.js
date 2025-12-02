@@ -1,5 +1,3 @@
-// src/app.js
-
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -26,10 +24,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// semua route API masuk sini
 app.use('/api', routes);
-
-// error handler global
 app.use(errorHandler);
 
 module.exports = app;

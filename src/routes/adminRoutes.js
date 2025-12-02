@@ -1,5 +1,3 @@
-// src/routes/adminRoutes.js
-
 const express = require('express');
 const {
   getAdminUsers,
@@ -20,7 +18,7 @@ const { authRequired, requireRole } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-// Middleware admin global
+// Middleware admin
 router.use(authRequired, requireRole('ADMIN'));
 
 // USERS

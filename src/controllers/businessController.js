@@ -1,5 +1,3 @@
-// src/controllers/businessController.js
-
 const { successResponse, errorResponse } = require('../utils/response');
 const {
   listMyBusinesses,
